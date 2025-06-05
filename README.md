@@ -1,0 +1,2 @@
+# GeminiSH
+Gemini in terminal
