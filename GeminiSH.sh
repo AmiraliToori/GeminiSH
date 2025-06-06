@@ -1,29 +1,30 @@
 #!/usr/bin/env bash
 
+#--------Color-Values---------#
+BOLD="\x1b[1m"
+
+BLUE="\x1b[34m"
+CYAN="\x1b[36m"
+
+RESET="\x1b[0m"
+
+#--------Configurations-----------#
+PROMPT="$1"
+MODEL="gemini-2.0-flash" # Default
+
 if [ -z "${1// /}" ]; then
   echo "Usage: $0 \"<Your prompt goes here>\""
   exit 1
 fi
 
-MODEL="gemini-2.0-flash" # Default
-PROMPT_TEXT="$1"
-
 if [ -n "$2" ] && [[ "${2,,}" =~ "^gemini" ]]; then
   MODEL="$2"
 fi
 
-BOLD="\x1b[1m"
-
-BLUE="\x1b[34m"
-CYAN="\x1b[36m"
-BG_RED="\x1b[41m"
-
-RESET="\x1b[0m"
-
 printf "\n${BLUE}MODEL: ${CYAN}${BOLD}${MODEL^^}${RESET}\n"
 
 JSON_PAYLOAD=$(jq -n \
-  --arg prompt_var "$PROMPT_TEXT" \
+  --arg prompt_var "$PROMPT" \
   '{
     "contents": [
       {
