@@ -14,14 +14,14 @@ GeminiSH is a command-line interface (CLI) tool that allows you to interact with
 
 To use GeminiSH, you need the following software installed on your system:
 
-- **bash**: The script is written in bash (`#!/usr/bin/env bash`). Most Unix-like systems have bash pre-installed.
-- **curl**: Used to send HTTP requests to the Gemini API.
+- **[https://www.gnu.org/software/bash/](bash)**: The script is written in bash (`#!/usr/bin/env bash`). Most Unix-like systems have bash pre-installed.
+- **[https://curl.se/download.html](curl)**: Used to send HTTP requests to the Gemini API.
     - *Installation*: You can download curl from [https://curl.se/download.html](https://curl.se/download.html) or install it using your system's package manager (e.g., `sudo apt install curl` on Debian/Ubuntu).
-- **jq**: A lightweight and flexible command-line JSON processor. Used to parse the API response.
+- **[https://jqlang.github.io/jq/download/](jq)**: A lightweight and flexible command-line JSON processor. Used to parse the API response.
     - *Installation*: Download from [https://jqlang.github.io/jq/download/](https://jqlang.github.io/jq/download/) or install using your system's package manager (e.g., `sudo apt install jq`).
-- **glow**: A terminal-based markdown reader. Used to render the model's output.
+- **[https://github.com/charmbracelet/glow](glow)**: A terminal-based markdown reader. Used to render the model's output.
     - *Installation*: Find installation instructions on the glow repository: [https://github.com/charmbracelet/glow](https://github.com/charmbracelet/glow)
-- **GEMINI_API_KEY**: You need a Google Gemini API key to use this script.
+- **[https://aistudio.google.com/app/apikey](GEMINI_API_KEY)**: You need a Google Gemini API key to use this script.
     - *Setup*:
         1. Obtain your API key from Google AI Studio: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
         2. Set the `GEMINI_API_KEY` environment variable. For your current session:
