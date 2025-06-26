@@ -9,7 +9,7 @@ CYAN="\x1b[36m"
 RESET="\x1b[0m"
 
 #--------Configurations-----------#
-MODEL="gemini-2.0-flash" # Default
+MODEL="gemini-2.5-flash" # Default
 
 #--------Models---------#
 list_models() {
