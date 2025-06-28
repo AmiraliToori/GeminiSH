@@ -32,6 +32,10 @@ function options() {
   case "$option" in
   "Prompt")
     prompt=$(gum write --placeholder "Your Prompt")
+    if [[ -z "${prompt// /}" ]]; then
+      gum style --foreground "$ERROR_COLOR" "Prompt cannot be empty. Please try again."
+      options
+    fi
     prompt_box "$prompt"
     ;;
   "Choose a model")
