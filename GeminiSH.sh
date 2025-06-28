@@ -60,9 +60,9 @@ EOF
 }
 
 #----handling-options-----#
-while getopts ":p:m:l" opt; do
+while getopts ":pm:l" opt; do
   case "$opt" in
-  p) prompt="$OPTARG" ;;
+  p) prompt=$(gum write --placeholder "Your Prompt") ;;
   l) list_models ;;
   m) MODEL="$OPTARG" ;;
   \?)
