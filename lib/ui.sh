@@ -27,11 +27,11 @@ function prompt_box() {
 }
 
 function options() {
-  local option=$(gum choose "Prompt" "Choose a model" "Exit")
+  local option=$(gum choose --header "The Menu:" "Prompt" "Choose a model" "Exit")
 
   case "$option" in
   "Prompt")
-    prompt=$(gum write --placeholder "Your Prompt")
+    prompt=$(gum write --height 15 --placeholder "Your Prompt")
     if [[ -z "${prompt// /}" ]]; then
       gum style --foreground "$ERROR_COLOR" "Prompt cannot be empty. Please try again."
       options
