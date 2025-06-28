@@ -14,7 +14,7 @@ function intro() {
     --background "$BACKGROUND_COLOR" \
     --foreground "$FOREGROUND_COLOR" --border-foreground "$SECONDARY_COLOR" --border double \
     --align center --width 50 --margin "1 2" --padding "2 4" \
-    'GeminiSH' 'Developed by: Amirali Toori' 'GitHub:@AmirAliToori'
+    'GeminiSH' 'Developed by: Amirali Toori' 'GitHub:@AmirAliToori' "Default model: $model"
 }
 
 function prompt_box() {
