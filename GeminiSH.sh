@@ -1,19 +1,14 @@
 #!/usr/bin/env bash
 
-#--------Color-Values---------#
-BOLD="\x1b[1m"
-
-BLUE="\x1b[34m"
-CYAN="\x1b[36m"
-
-RESET="\x1b[0m"
+#--------Colors-----------#
+PRIMARY_COLOR="#5B9CFF" #Gemini Blue
 
 #--------Configurations-----------#
 model="gemini-2.5-flash" # Default
 
 #--------Main Function---------#
 main() {
-  printf "\n${BLUE}MODEL: ${CYAN}${BOLD}${model^^}${RESET}\n"
+  gum style --foreground "$PRIMARY_COLOR" --bold "MODEL: $model"
   JSON_PAYLOAD=$(jq -n \
     --arg prompt_var "$prompt" \
     '{
