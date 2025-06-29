@@ -5,6 +5,10 @@ model="gemini-2.5-flash" # Default
 
 #--------Main Function---------#
 main() {
+  if [ -z "$prompt" ]; then
+    exit 0
+  fi
+
   ./lib/gradient_color.sh "MODEL: $model" 255 0 0 0 0 255
   JSON_PAYLOAD=$(jq -n \
     --arg prompt_var "$prompt" \
