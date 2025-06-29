@@ -37,6 +37,9 @@ main() {
     mkdir -p "./history/$today_date"
 
     printf "$result" | tee "./history/$today_date/$today_time.md" | glow -
+  else
+    error_page " There is something wrong, Please check the connection." "Loading"
+    ./GeminiSH.sh
   fi
 }
 
