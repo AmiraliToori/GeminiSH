@@ -55,6 +55,12 @@ function choose_model_menu() {
   fi
 }
 
+function history_menu() {
+  local file=$(gum file ./history)
+  gum pager file
+  ./GeminiSH.sh
+}
+
 function exit_menu() {
   clear
   gum confirm && exit 0 || ./GeminiSH.sh
@@ -66,7 +72,7 @@ function options() {
   case "$option" in
   "Prompt") prompt ;;
   "Choose a model") choose_model_menu ;;
-  "History") ;;
+  "History") history_menu ;;
   "Exit") exit_menu ;;
   esac
 }
