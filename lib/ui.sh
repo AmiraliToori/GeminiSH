@@ -72,8 +72,7 @@ function choose_model_menu() {
 }
 
 function history_menu() {
-  local file=$(gum file ./history)
-  gum pager file
+  gum pager <"$(gum file ./history)"
   ./GeminiSH.sh
 }
 
