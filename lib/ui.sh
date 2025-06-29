@@ -10,47 +10,64 @@ ERROR_COLOR="#EF6B6B"        #Error Red
 COMMENT_COLOR="#8E95A2"      #Muted Gray
 
 function intro() {
+  clear
   gum style \
     --background "$BACKGROUND_COLOR" \
-    --foreground "$FOREGROUND_COLOR" --border-foreground "$SECONDARY_COLOR" --border double \
-    --align center --width 50 --margin "1 2" --padding "2 4" \
-    'GeminiSH' 'Developed by: Amirali Toori' 'GitHub:@AmirAliToori' "Default model: $model"
+    --foreground "$FOREGROUND_COLOR" \
+    --border-foreground "$SECONDARY_COLOR" \
+    --border double \
+    --align center \
+    --width 50 \
+    --margin "1 2" \
+    --padding "2 4" \
+    $(gum style --bold $(./lib/gradient_color.sh "GeminiSH" 255 0 0 0 0 255)) \
+    'Developed by: Amirali Toori' \
+    'GitHub:@AmiraliToori' \
+    "Default model: $model"
 }
 
 function prompt_box() {
+  clear
   local prompt="$1"
   gum style \
-    --background "$BACKGROUND_COLOR" \
-    --foreground "$FOREGROUND_COLOR" --border-foreground "$SECONDARY_COLOR" --border double \
-    --align center --width 50 --margin "1 2" --padding "2 4" \
-    "$prompt"
+    --foreground "$FOREGROUND_COLOR" \
+    --align left \
+    "$(gum style --foreground 212 --bold --underline "PROMPT:") $prompt"
+}
+
+function prompt() {
+  prompt=$(gum write --height 15 --placeholder "Your Prompt")
+  if [[ -z "${prompt// /}" ]]; then
+    gum style --foreground "$ERROR_COLOR" "Prompt cannot be empty. Please try again."
+    options
+  fi
+  prompt_box "$prompt"
+}
+
+function choose_model_menu() {
+  model=$(gum choose $(./lib/models_list.sh) 2>/dev/null)
+  if [[ -z $model ]]; then
+    gum style --foreground "$ERROR_COLOR" "No model selected. Please try again."
+    options
+  else
+    gum style --foreground "$PRIMARY_COLOR" "You selected: $model"
+    options
+  fi
+}
+
+function exit_menu() {
+  clear
+  gum confirm && exit 0 || ./GeminiSH.sh
 }
 
 function options() {
-  local option=$(gum choose --header "The Menu:" "Prompt" "Choose a model" "Exit")
+  local option=$(gum choose --header "The Menu:" "Prompt" "Choose a model" "History" "Exit")
 
   case "$option" in
-  "Prompt")
-    prompt=$(gum write --height 15 --placeholder "Your Prompt")
-    if [[ -z "${prompt// /}" ]]; then
-      gum style --foreground "$ERROR_COLOR" "Prompt cannot be empty. Please try again."
-      options
-    fi
-    prompt_box "$prompt"
-    ;;
-  "Choose a model")
-    model=$(gum choose $(./lib/models_list.sh))
-    if [[ -z $model ]]; then
-      gum style --foreground "$ERROR_COLOR" "No model selected. Please try again."
-      options
-    else
-      gum style --foreground "$PRIMARY_COLOR" "You selected: $model"
-      options
-    fi
-    ;;
-  "Exit")
-    exit 0
-    ;;
+  "Prompt") prompt ;;
+  "Choose a model") choose_model_menu ;;
+  "History") ;;
+  "Exit") exit_menu ;;
   esac
 }
 
