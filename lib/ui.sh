@@ -47,8 +47,18 @@ function prompt() {
 function choose_model_menu() {
   model=$(gum choose $(./lib/models_list.sh) 2>/dev/null)
   if [[ -z $model ]]; then
-    gum style --foreground "$ERROR_COLOR" "No model selected. Please try again."
-    options
+    clear
+    gum style \
+      --border rounded \
+      --border-foreground 212 \
+      --width 50 \
+      --margin "1 20" \
+      --align center \
+      --foreground "$ERROR_COLOR" \
+      " No model selected. Please try again. "
+    gum spin -s dot --title "Loading" -- sleep 1
+    clear
+    ./GeminiSH.sh
   else
     gum style --foreground "$PRIMARY_COLOR" "You selected: $model"
     options
