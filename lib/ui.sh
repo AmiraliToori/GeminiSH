@@ -20,8 +20,8 @@ function intro() {
     --padding "2 4" \
     $(gum style --bold $(./lib/gradient_color.sh "GeminiSH" 255 0 0 0 0 255)) \
     'Developed by: Amirali Toori' \
-    'GitHub:@AmiraliToori' \
-    "Default model: $model"
+    $(gum style --bold $(./lib/gradient_color.sh "GitHub:@AmiraliToori" 0 248 242 65 195 0)) \
+    "Current model: $model"
 }
 
 function error_page() {
@@ -59,12 +59,14 @@ function take_prompt_menu() {
 }
 
 function choose_model_menu() {
+  clear
   model=$(gum choose $(./lib/models_list.sh))
   if [[ -z $model ]]; then
     error_page "No model selected. Please try again." "Loading"
     ./GeminiSH.sh
   else
-    gum style --foreground "$PRIMARY_COLOR" "You selected: $model"
+    clear
+    intro
     options
   fi
 }
