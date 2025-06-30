@@ -42,6 +42,7 @@ main() {
     ./GeminiSH.sh
   fi
 }
-
+source ./configs/gum_vars.sh
 source ./lib/ui.sh
+
 main
