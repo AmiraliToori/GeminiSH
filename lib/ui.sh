@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
-BACKGROUND_COLOR="#1E1F29"   #Deep Inn black
-FOREGROUND_COLOR="#E0E7EB"   #Light Gray
-PRIMARY_COLOR="#5B9CFF"      #Gemini Blue
-SECONDARY_COLOR="#A084E8"    #Celestial Violet
-TERTIARY_COLOR="#2DD4BF"     #Tech Teal
-WARNING_DATA_COLOR="#FBC02D" #Data Gold
-ERROR_COLOR="#EF6B6B"        #Error Red
-COMMENT_COLOR="#8E95A2"      #Muted Gray
+function change_colors_menu() {
+  local selected_color=$(gum choose "Default" "Gum")
+  ./lib/colors.sh "$selected_color"
+  source ./lib/colors.sh
+  #./GeminiSH.sh
+}
 
 function intro() {
   clear
@@ -61,7 +59,7 @@ function take_prompt_menu() {
 }
 
 function choose_model_menu() {
-  model=$(gum choose $(./lib/models_list.sh) 2>/dev/null)
+  model=$(gum choose $(./lib/models_list.sh))
   if [[ -z $model ]]; then
     error_page "No model selected. Please try again." "Loading"
     ./GeminiSH.sh
@@ -82,13 +80,18 @@ function exit_menu() {
 }
 
 function options() {
-  local option=$(gum choose --header "The Menu:" "Prompt" "Choose a model" "History" "Exit")
+  local option=$(gum choose --header "The Menu:" "Prompt" "Choose a model" "History" "Change Colors" "Exit")
 
   case "$option" in
   "Prompt") take_prompt_menu ;;
   "Choose a model") choose_model_menu ;;
   "History") history_menu ;;
+  "Change Colors") change_colors_menu ;;
   "Exit") exit_menu ;;
+  *)
+    clear
+    exit 0
+    ;;
   esac
 }
 
