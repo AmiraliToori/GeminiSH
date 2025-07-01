@@ -33,9 +33,8 @@ function prompt_box() {
   clear
   local prompt="$1"
   gum style \
-    --foreground "$FOREGROUND_COLOR" \
     --align left \
-    "$(gum style --foreground 212 --bold --underline "PROMPT:") $prompt"
+    "$(gum style --foreground="116" --bold --underline "PROMPT:") $prompt"
 }
 
 function take_prompt_menu() {
@@ -49,8 +48,17 @@ function take_prompt_menu() {
 
 function choose_model_menu() {
   clear
-  model=$(gum choose $(./lib/models_list.sh) 2>/dev/null)
+  local list_of_models=$(./lib/models_list.sh)
+
+  if [[ -z "$list_of_models" ]]; then
+    error_spinner "No model selected. Please try again."
+    ./GeminiSH.sh
+  fi
+
+  model=$(gum choose $list_of_models)
+
   if [[ -z $model ]]; then
+    clear
     error_spinner "No model selected. Please try again."
     ./GeminiSH.sh
   else
