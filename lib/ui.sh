@@ -2,16 +2,12 @@
 
 function change_colors_menu() {
   local selected_color=$(gum choose "Default" "Gum")
-  ./lib/colors.sh "$selected_color"
-  source ./lib/colors.sh
-  #./GeminiSH.sh
 }
 
 function intro() {
   clear
   gum style \
-    --foreground "$FOREGROUND_COLOR" \
-    --border-foreground "$SECONDARY_COLOR" \
+    --background "#070708" \
     --border hidden \
     --align center \
     --width 50 \
@@ -23,20 +19,14 @@ function intro() {
     "Current model: $model"
 }
 
-function error_page() {
+function error_spinner() {
   local error_text="$1"
-  local loading_text="$2"
-  clear
-  gum style \
-    --border rounded \
-    --border-foreground 212 \
-    --width 50 \
-    --margin "1 20" \
-    --align center \
-    --foreground "$ERROR_COLOR" \
-    " $1 "
-  gum spin -s dot --title "$2" -- sleep 1
-  clear
+  gum spin --spinner="dot" \
+    --title.foreground="#FFFF00" \
+    --spinner.foreground="#E7E7E7" \
+    --align="left" \
+    --title="$1" \
+    -- sleep 3
 }
 
 function prompt_box() {
@@ -51,7 +41,7 @@ function prompt_box() {
 function take_prompt_menu() {
   prompt=$(gum write --height 15 --placeholder="Write your prompt")
   if [[ -z "${prompt// /}" ]]; then
-    error_page "Prompt cannot be empty. Please try again." "Loading"
+    error_spinner "Prompt cannot be empty. Please try again."
     take_prompt_menu
   fi
   prompt_box "$prompt"
@@ -59,9 +49,9 @@ function take_prompt_menu() {
 
 function choose_model_menu() {
   clear
-  model=$(gum choose $(./lib/models_list.sh))
+  model=$(gum choose $(./lib/models_list.sh) 2>/dev/null)
   if [[ -z $model ]]; then
-    error_page "No model selected. Please try again." "Loading"
+    error_spinner "No model selected. Please try again."
     ./GeminiSH.sh
   else
     clear
