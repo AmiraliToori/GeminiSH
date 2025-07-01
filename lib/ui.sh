@@ -10,10 +10,9 @@ function change_colors_menu() {
 function intro() {
   clear
   gum style \
-    --background "$BACKGROUND_COLOR" \
     --foreground "$FOREGROUND_COLOR" \
     --border-foreground "$SECONDARY_COLOR" \
-    --border double \
+    --border hidden \
     --align center \
     --width 50 \
     --margin "1 2" \
