@@ -72,7 +72,7 @@ function choose_model_menu() {
 }
 
 function history_menu() {
-  gum pager <"$(gum file ./history)"
+  gum pager --show-line-numbers <"$(gum file ./history)"
   ./GeminiSH.sh
 }
 
