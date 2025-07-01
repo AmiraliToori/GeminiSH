@@ -50,7 +50,7 @@ function prompt_box() {
 }
 
 function take_prompt_menu() {
-  prompt=$(gum write --height 15 --placeholder "Your Prompt")
+  prompt=$(gum write --height 15 --placeholder="Write your prompt")
   if [[ -z "${prompt// /}" ]]; then
     error_page "Prompt cannot be empty. Please try again." "Loading"
     take_prompt_menu
