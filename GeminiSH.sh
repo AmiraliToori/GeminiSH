@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
-# Load configurations and UI utilities first
+# Initial source of ui.sh to make load_theme_preference available
+source ./lib/ui.sh
+
+# Load theme preference. This will set GEMINI_SH_CURRENT_THEME.
+load_theme_preference
+
+# Load configurations (gum_vars.sh which sources themes.sh and applies the theme)
+# This must happen *after* load_theme_preference has set GEMINI_SH_CURRENT_THEME
 source ./configs/gum_vars.sh
-source ./lib/ui.sh # ui.sh also sources gradient_color.sh if needed by its functions
+# Re-source ui.sh to ensure it picks up the themed variables correctly for its functions
+source ./lib/ui.sh
 
 #--------Global Configurations-----------#
 model="gemini-1.5-flash" # Default model, can be changed by choose_model_menu in ui.sh
@@ -40,16 +48,51 @@ process_prompt_and_display() {
     }')
 
   # Show a spinner while fetching
+  local curl_output
+  local curl_exit_code
   local result
-  result=$(gum spin --spinner.foreground "$SPINNER_COLOR" --title "Thinking..." -- \
+
+  # Capture curl output and exit code separately
+  # Use a temporary file for curl output to handle potential jq errors later
+  temp_curl_output=$(mktemp)
+
+  gum spin --spinner.foreground "$SPINNER_COLOR" --title "Thinking..." -- \
     curl "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$GEMINI_API_KEY" \
       -s \
+      -w "%{http_code}" \
       -H 'Content-Type: application/json' \
       -X POST \
-      -d "$JSON_PAYLOAD" |
-    jq -r '.candidates[0].content.parts[0].text'
-  )
+      -d "$JSON_PAYLOAD" \
+      -o "$temp_curl_output"
+  curl_exit_code=$?
 
+  http_code=$(tail -n1 "$temp_curl_output")
+  # Remove http_code from the end of the file
+  # Check if file has more than one line before truncating
+  if [[ $(wc -l < "$temp_curl_output") -gt 1 ]]; then
+    truncate -s -$(echo -n "$http_code" | wc -c) "$temp_curl_output"
+  else
+    # if only http_code is there, means body was empty
+    echo "" > "$temp_curl_output"
+  fi
+
+  curl_output=$(cat "$temp_curl_output")
+  rm "$temp_curl_output"
+
+  if [ $curl_exit_code -ne 0 ]; then
+    # cURL specific errors
+    case $curl_exit_code in
+      6) error_page "Could not resolve host. Check your internet connection and DNS." "Network Error"; return 1 ;;
+      7) error_page "Failed to connect to host. Check your internet connection." "Network Error"; return 1 ;;
+      28) error_page "Operation timed out. Check your internet connection." "Network Error"; return 1 ;;
+      *) error_page "curl Error: Exit Code $curl_exit_code. Check connection or API endpoint." "Network Error"; return 1 ;;
+    esac
+  fi
+
+  # Try to parse the result if curl was successful
+  result=$(echo "$curl_output" | jq -r '.candidates[0].content.parts[0].text' 2>/dev/null)
+
+  # Check if jq parsing was successful and result is non-empty and not "null"
   if [[ -n "$result" && "$result" != "null" ]]; then
     local today_date="$(date "+%Y-%m-%d")"
     local today_time="$(date "+%H:%M:%S")"
@@ -58,23 +101,27 @@ process_prompt_and_display() {
     # Display with glow and save to history
     printf "%s\n" "$result" | tee "./history/$today_date/$today_time.md" | glow -
 
-    # Ask to copy to clipboard
-    if gum confirm "Copy to clipboard?"; then
+    # Ask to copy to clipboard using Nerd Font icon
+    if gum confirm --prompt.foreground "$FOREGROUND_COLOR" --selected.background "$PRIMARY_COLOR" --unselected.background "$SECONDARY_COLOR" " Copy to clipboard?"; then
       printf "%s" "$result" | gum write # gum write should handle piping to clipboard
-      gum style --padding "0 1" --foreground "$SUCCESS_COLOR" "Copied to clipboard!"
+      gum style --padding "0 1" --foreground "$SUCCESS_COLOR" --background "$BACKGROUND_COLOR" "Copied to clipboard!"
     else
-      gum style --padding "0 1" --foreground "$INFO_COLOR" "Not copied."
+      gum style --padding "0 1" --foreground "$INFO_COLOR" --background "$BACKGROUND_COLOR" "Not copied."
     fi
   else
-    # More specific error handling for API issues
-    local error_message=$(echo "$result" | jq -r '.error.message' 2>/dev/null)
-    if [[ -n "$error_message" && "$error_message" != "null" ]]; then
-        error_page "API Error: $error_message" "Error"
+    # Handle cases where jq parsing failed or the result is "null" or empty
+    # Also, try to get a more specific error message from the API response
+    local api_error_message=$(echo "$curl_output" | jq -r '.error.message' 2>/dev/null)
+
+    if [[ -n "$api_error_message" && "$api_error_message" != "null" ]]; then
+      error_page "API Error: $api_error_message" "API Error"
+    elif [[ "$http_code" != "200" ]]; then
+      error_page "API Request Failed. HTTP Status: $http_code. Response: $curl_output" "API Error"
     else
-        error_page "No response or empty result from API. Check connection or API key." "Error"
+      # This case means curl succeeded (exit code 0, http 200), but jq parsing failed to find the text
+      # or the text was genuinely "null" or empty.
+      error_page "No valid response or empty result from API. Check API key or model name. Response: $curl_output" "API Error"
     fi
-    # Decide if we should re-run or exit. For CLI mode, exit is better.
-    # For interactive, ui.sh handles re-prompting or going to menu.
     return 1 # Indicate failure
   fi
 }

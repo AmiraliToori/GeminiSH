@@ -1,33 +1,29 @@
 #!/usr/bin/env bash
 
-export GUM_CHOOSE_CURSOR="󰫢 "
-export GUM_CHOOSE_CURSOR_FOREGROUND="#0D6EFD"
-export GUM_CHOOSE_HEADER_FOREGROUND="#E40406"
+# This file is now primarily responsible for loading the selected theme
+# and applying its colors to the GUM environment variables.
 
-export GUM_CONFIRM_PROMPT_FOREGROUND="#E40406"
-export GUM_CONFIRM_SELECTED_BACKGROUND="#0D6EFD"
+# Source the theme definitions and the apply_theme function
+# The THEME_CONFIG_DIR should be the directory where this script itself is located.
+THEME_CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${THEME_CONFIG_DIR}/themes.sh"
 
-export GUM_FILE_CURSOR="󰫢 "
-export GUM_FILE_CURSOR_FOREGROUND="#0D6EFD"
-export GUM_FILE_CURSOR_BACKGROUND=""
-export GUM_FILE_SYMLINK_FOREGROUND="#00AF87"
-export GUM_FILE_SYMLINK_BACKGROUND=""
-export GUM_FILE_DIRECTORY_FOREGROUND="#01F7F8"
-export GUM_FILE_DIRECTORY_BACKGROUND=""
-export GUM_FILE_FILE_FOREGROUND=""
-export GUM_FILE_FILE_BACKGROUND=""
-export GUM_FILE_PERMISSIONS_FOREGROUND="#737373"
-export GUM_FILE_PERMISSIONS_BACKGROUND=""
-export GUM_FILE_SELECTED_FOREGROUND="#0D6EFD"
-export GUM_FILE_SELECTED_BACKGROUND=""
-export GUM_FILE_FILE_SIZE_FOREGROUND="#535354"
-export GUM_FILE_FILE_SIZE_BACKGROUND=""
-export GUM_FILE_HEADER_FOREGROUND="#E40406"
-export GUM_FILE_HEADER_BACKGROUND=""
+# The GEMINI_SH_CURRENT_THEME variable is expected to be set by themes.sh
+# (either from environment or a default).
+# The apply_theme function in themes.sh will then set all necessary
+# GUM_..._FOREGROUND/BACKGROUND variables as well as general color vars
+# like BACKGROUND_COLOR, FOREGROUND_COLOR, ERROR_COLOR etc.
 
-export GUM_PAGER_FORGROUND=""
-export GUM_PAGER_MATCH_FOREGROUND="#E40406"
-export GUM_PAGER_MATCH_HIGH_FOREGROUND="#E40406"
-export GUM_PAGER_MATCH_HIGH_BACKGROUND="#0D6EFD"
-export GUM_PAGER_HELP_FOREGROUND=""
-export GUM_PAGER_HELP_BACKGROUND=""
+# Example: if GEMINI_SH_CURRENT_THEME is "Dracula", apply_theme "Dracula"
+# will set GUM_CHOOSE_CURSOR_FOREGROUND to THEME_DRACULA_PRIMARY, etc.
+
+# Most of the original hardcoded GUM_EXPORT variables are now dynamically set
+# within the apply_theme function in themes.sh.
+
+# You can add any non-color related GUM settings here if needed.
+# For example:
+# export GUM_CHOOSE_HEIGHT=10
+# export GUM_INPUT_WIDTH=80
+
+# Ensure this script can be sourced without error
+true
