@@ -50,7 +50,9 @@ function take_prompt_menu() {
   clear
   gum style --padding "1 2" --bold --underline --foreground "$FOREGROUND_COLOR" --background "$BACKGROUND_COLOR" "Enter your prompt below (Ctrl+D when done):"
   # The global 'prompt' variable (from GeminiSH.sh) will be set here
-  prompt=$(gum write --char-limit 0 --placeholder "Type your prompt here..." --height 15 --show-line-numbers --text.foreground "$FOREGROUND_COLOR" --base.background "$BACKGROUND_COLOR" --cursor.foreground "$PRIMARY_COLOR" --placeholder.foreground "$SECONDARY_COLOR")
+  # Removed problematic flags: --text.foreground, --base.background, --cursor.foreground, --placeholder.foreground
+  # Theming will rely on GUM_WRITE_* environment variables set in themes.sh
+  prompt=$(gum write --char-limit 0 --placeholder "Type your prompt here..." --height 15 --show-line-numbers)
 
   if [[ -z "${prompt// /}" ]]; then # Check if prompt is empty or only whitespace
     error_page "Prompt cannot be empty. Please try again."
