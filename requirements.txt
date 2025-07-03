@@ -1,0 +1,11 @@
+# Core Utilities
+curl
+jq
+glow
+gum
+
+# Clipboard utilities (install one based on your OS)
+# For Linux:
+xclip
+# For macOS (usually pre-installed or via brew install gum):
+# pbcopy (often comes with macOS or installed with other dev tools)
