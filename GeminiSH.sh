@@ -1,48 +1,20 @@
 #!/usr/bin/env bash
 
-#--------Configurations-----------#
 model="gemini-2.5-flash" # Default
+program_run=1
 
-#--------Main Function---------#
-main() {
-  if [ -z "$prompt" ]; then
-    exit 0
-  fi
-
-  ./lib/gradient_color.sh "MODEL: $model" 255 0 0 0 0 255
-  JSON_PAYLOAD=$(jq -n \
-    --arg prompt_var "$prompt" \
-    '{
-      "contents": [
-        {
-          "parts": [
-            {
-              "text": $prompt_var
-            }
-          ]
-        }
-      ]
-    }')
-
-  local result=$(curl "https://generativelanguage.googleapis.com/v1beta/models/"$model":generateContent?key=$GEMINI_API_KEY" \
-    -s \
-    -H 'Content-Type: application/json' \
-    -X POST \
-    -d "$JSON_PAYLOAD" |
-    jq -r '.candidates[0].content.parts[0].text')
-
-  if [[ -n "$result" ]]; then
-    local today_date="$(date "+%Y-%m-%d")"
-    local today_time="$(date "+%H:%M:%S")"
-    mkdir -p "./history/$today_date"
-
-    printf "$result" | tee "./history/$today_date/$today_time.md" | glow -
-  else
-    error_page " There is something wrong, Please check the connection." "Loading"
-    ./GeminiSH.sh
-  fi
-}
 source ./configs/gum_vars.sh
-source ./lib/ui.sh
+while ((program_run == 1)); do
+  main_menu_option=$(./lib/main_menu.sh "$model")
 
-main
+  case "$main_menu_option" in
+  "Prompt") program_run=$(./lib/take_prompt_menu.sh "$model") ;;
+  "Choose a model") model=$(./lib/choose_model_menu.sh "$model") ;;
+  "History") ./lib/history_menu.sh ;;
+  "Exit") program_run=$(./lib/exit_menu.sh) ;;
+  *)
+    clear
+    program_run=0
+    ;;
+  esac
+done
