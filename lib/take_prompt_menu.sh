@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./lib/error_page.sh
+source ./lib/utils.sh
 
 model="$1"
 
@@ -12,7 +12,7 @@ function prompt_box() {
     "$(gum style --foreground 212 --bold --underline "PROMPT:") $prompt" >&2
 }
 
-prompt=$(gum write --height 15 --placeholder="Write your prompt")
+prompt=$(gum write --height 15 --show-line-numbers --placeholder="Write your prompt")
 if [[ -z "${prompt// /}" ]]; then
   error_page "Prompt cannot be empty. Please try again." "Loading"
 fi
