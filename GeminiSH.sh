@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-model="gemini-2.5-flash" # Default
 program_run=1
 
-source ./configs/gum_vars.sh
+source ./configs/config.sh
 while ((program_run == 1)); do
   main_menu_option=$(./lib/main_menu.sh "$model")
 
