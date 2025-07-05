@@ -64,3 +64,11 @@ function gradient_text_rgb {
 
   printf "\e[0m"
 }
+
+function prompt_box {
+  clear >&2
+  local prompt="$1"
+  gum style \
+    --align left \
+    "$(gum style --foreground 212 --bold --underline "PROMPT:") $prompt" >&2
+}
