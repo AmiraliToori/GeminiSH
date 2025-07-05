@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+#-----------------Keys-----------------------#
+# export GEMINI_API_KEY="<Your GEMINI API KEY goes here!>"
+
+#----------------Config---------------------#
+export model="gemini-2.5-flash"
+
+#-----------------GUM_VARS------------------#
 export GUM_CHOOSE_CURSOR="󰫢 "
 export GUM_CHOOSE_CURSOR_FOREGROUND="#0D6EFD"
 export GUM_CHOOSE_HEADER_FOREGROUND="#E40406"
