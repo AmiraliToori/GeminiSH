@@ -31,8 +31,9 @@ function main {
 
 prompt=$(gum write --height 15 --show-line-numbers --placeholder="Write your prompt")
 if [[ -z "${prompt// /}" ]]; then
-  error_page "Prompt cannot be empty. Please try again." "Loading"
-  printf "0"
+  error_page "Prompt cannot be empty. Please try again."
+  printf "1"
+  exit
 else
 
   export -f main
@@ -50,6 +51,8 @@ else
     prompt_box "$prompt"
     printf "$result" | tee "./history/$today_date/$today_time.md" | glow - >&2
   else
-    error_page " There is something wrong, Please check the connection." "Loading"
+    error_page " There is something wrong, Please check the connection."
+    printf "1"
+    exit
   fi
 fi
